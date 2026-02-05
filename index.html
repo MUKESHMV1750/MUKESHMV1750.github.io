@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Counting System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #4a6de5;
+    --primary-dark: #3a5bd9;
+    --secondary: #ff6b8b;
+    --secondary-dark: #e85678;
+    --success: #2ed573;
+    --danger: #ff4757;
+    --dark: #2f3542;
+    --light: #f8f9fa;
+    --gray: #a4b0be;
+    --gray-light: #dfe4ea;
+    --border-radius: 12px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: var(--dark);
+}
+
+.container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 35px;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.header h1 {
+    color: var(--dark);
+    font-size: 32px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.header p {
+    color: var(--gray);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.counter-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #edf1ff 100%);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(74, 109, 229, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.counter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.counter-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.counter-value-box {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 25px 40px;
+    font-size: 88px;
+    font-weight: 800;
+    color: var(--dark);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--gray-light);
+    min-width: 180px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+}
+
+.counter-value-box:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.counter-value-box .tick-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--success);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(46, 213, 115, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.counter-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.counter-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    box-shadow: 0 6px 12px rgba(74, 109, 229, 0.2);
+}
+
+.counter-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(74, 109, 229, 0.3);
+}
+
+.counter-btn:active {
+    transform: translateY(-1px);
+}
+
+.counter-btn.minus {
+    background: var(--danger);
+    box-shadow: 0 6px 12px rgba(255, 71, 87, 0.2);
+}
+
+.counter-btn.minus:hover {
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+}
+
+.counter-label {
+    text-align: center;
+    color: var(--gray);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 8px;
+}
+
+.number-grid-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--primary);
+    margin-right: 10px;
+    border-radius: 2px;
+}
+
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.number-btn {
+    height: 80px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: white;
+    color: var(--dark);
+    font-size: 28px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--gray-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.number-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.number-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 8px 16px rgba(74, 109, 229, 0.2);
+}
+
+.number-btn.active::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calculation-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #edf1ff 100%);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    border: 1px solid rgba(74, 109, 229, 0.1);
+}
+
+.calculation-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.calculation-field {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 240px;
+}
+
+.field-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    min-width: 160px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 5px 5px 5px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--gray-light);
+    transition: var(--transition);
+    flex: 1;
+    min-width: 200px;
+    justify-content: space-between;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 6px 12px rgba(74, 109, 229, 0.15);
+}
+
+.input-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-right: 12px;
+}
+
+.input-box {
+    flex: 0 0 auto;
+    width: 90px;
+    padding: 15px;
+    font-size: 20px;
+    border: none;
+    background: transparent;
+    text-align: right;
+    font-weight: 600;
+    color: var(--dark);
+    outline: none;
+}
+
+.input-box::placeholder {
+    color: var(--gray);
+}
+
+.equals-sign {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 6px 0 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.save-btn {
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 8px rgba(74, 109, 229, 0.2);
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(74, 109, 229, 0.3);
+}
+
+.save-btn:active {
+    transform: translateY(-1px);
+}
+
+.save-btn::before {
+    content: '💾';
+    font-size: 16px;
+    margin-right: 6px;
+}
+
+.save-status {
+    color: var(--success);
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin-left: 8px;
+}
+
+.result-display {
+    background: var(--primary);
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 16px rgba(74, 109, 229, 0.2);
+    transition: var(--transition);
+    min-height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: break-all;
+}
+
+.result-display:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(74, 109, 229, 0.25);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.calculate-btn, .reset-btn {
+    flex: 1;
+    padding: 18px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.calculate-btn {
+    background: var(--success);
+    color: white;
+    box-shadow: 0 6px 12px rgba(46, 213, 115, 0.2);
+}
+
+.calculate-btn:hover {
+    background: #25c768;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(46, 213, 115, 0.3);
+}
+
+.reset-btn {
+    background: var(--danger);
+    color: white;
+    box-shadow: 0 6px 12px rgba(255, 71, 87, 0.2);
+}
+
+.reset-btn:hover {
+    background: #ff3742;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+}
+
+.calculate-btn:active, .reset-btn:active {
+    transform: translateY(-1px);
+}
+
+.calculate-btn::before {
+    content: '=';
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.reset-btn::before {
+    content: '↺';
+    font-weight: 800;
+    font-size: 20px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 25px;
+    }
+    
+    .counter-value-box {
+        font-size: 72px;
+        padding: 20px 30px;
+        min-width: 150px;
+    }
+    
+    .counter-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .number-btn {
+        height: 70px;
+        font-size: 24px;
+    }
+    
+    .input-group {
+        min-width: 100%;
+    }
+
+    .calculation-field {
+        min-width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .calculation-field .action-group {
+        align-items: flex-start;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .result-display {
+        font-size: 28px;
+        padding: 18px;
+    }
+}
+
+@media (max-width: 400px) {
+    .counter-value-box {
+        font-size: 60px;
+        padding: 15px 25px;
+    }
+    
+    .number-btn {
+        height: 65px;
+    }
+    
+    .calculation-inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .equals-sign {
+        margin: 10px 0;
+        justify-content: center;
+    }
+}
+
+/* Animation for counter update */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.counter-update {
+    animation: pulse 0.3s ease;
+}
+
+.counter-edit-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary);
+    font-size: 60px;
+    font-weight: 800;
+    text-align: center;
+    outline: none;
+    background: white;
+    color: var(--dark);
+}
+
+/* Animation for tick */
+@keyframes tickFade {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(1); }
+}
+
+.tick-animation {
+    animation: tickFade 0.6s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>FARMER CALCULATOR</h1>
+        <p>Interactive counting with real-time calculation</p>
+    </div>
+    
+    <div class="counter-section">
+        <div class="counter-display">
+            <div class="counter-value-box" id="counterBox" onclick="startCounterEdit()">
+                <span id="counterValue">1</span>
+                <input type="number" id="counterEditInput" class="counter-edit-input" style="display:none;" min="1" step="1">
+                <div class="tick-overlay" id="counterTick">✓</div>
+            </div>
+        </div>
+        
+        <div class="counter-controls">
+            <button id="btnMinus" class="counter-btn minus" onclick="decrement()">-</button>
+            <button id="btnPlus" class="counter-btn" onclick="increment()">+</button>
+        </div>
+        
+        <div class="counter-label">Current Count</div>
+    </div>
+    
+    
+    <div class="calculation-section">
+        <div class="section-title">Multiplication Calculator</div>
+        
+        <div class="calculation-inputs">
+            <div class="calculation-field">
+                <label class="field-label">மூட்டையின் விலை</label>
+                <div class="input-group">
+                    <span class="input-label" id="counterLabel">1</span>
+                    <input type="number" id="multiplier" class="input-box" placeholder="Enter multiplier" value="1000" min="0" step="any">
+                </div>
+            </div>
+
+            <div class="equals-sign">×</div>
+
+            <div class="calculation-field">
+                <label class="field-label">மூட்டையின் எண்ணிக்கை</label>
+                <div class="input-group">
+                    <span class="input-label">1</span>
+                    <input type="number" id="multiplicand" class="input-box" placeholder="Enter multiplicand" value="1" min="0" step="any" disabled>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-display" id="result">1,000</div>
+        
+        <div class="action-buttons">
+            <button class="calculate-btn" onclick="calculate()">CALCULATE</button>
+            <button class="reset-btn" onclick="resetAll()">RESET ALL</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+let currentNumber = 1;
+let multiplier = 1000;
+
+// Initialize display
+document.getElementById('counterValue').textContent = currentNumber;
+document.getElementById('counterLabel').textContent = currentNumber;
+document.getElementById('result').textContent = formatNumber(currentNumber * multiplier);
+
+function increment() {
+    currentNumber++;
+    updateDisplay();
+    showCounterTick();
+    animateCounterBox();
+}
+
+function decrement() {
+    if (currentNumber > 1) {
+        currentNumber--;
+        updateDisplay();
+        animateCounterBox();
+    }
+}
+
+function setNumber(number, element) {
+    currentNumber = number;
+    updateDisplay();
+    animateCounterBox();
+}
+
+function updateDisplay() {
+    const counterElement = document.getElementById('counterValue');
+    const counterLabel = document.getElementById('counterLabel');
+    
+    counterElement.textContent = currentNumber;
+    counterLabel.textContent = currentNumber;
+    
+    // Update multiplicand input
+    document.getElementById('multiplicand').value = currentNumber;
+    
+    calculate();
+    updateActiveButton();
+}
+
+function calculate() {
+    const multiplierInput = document.getElementById('multiplier');
+    multiplier = parseFloat(multiplierInput.value) || 0;
+    
+    const result = currentNumber * multiplier;
+    const resultElement = document.getElementById('result');
+    
+    resultElement.textContent = formatNumber(result);
+    
+    // Add animation to result
+    resultElement.classList.add('counter-update');
+    setTimeout(() => {
+        resultElement.classList.remove('counter-update');
+    }, 300);
+}
+
+function formatNumber(num) {
+    if (num === 0) return "0";
+    
+    // Format with commas for thousands
+    let formatted = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // If it's a decimal, limit to 2 decimal places
+    if (formatted.includes('.')) {
+        const parts = formatted.split('.');
+        if (parts[1].length > 2) {
+            formatted = parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    }
+    
+    return formatted;
+}
+
+function resetAll() {
+    currentNumber = 1;
+    multiplier = 1000;
+    
+    document.getElementById('counterValue').textContent = currentNumber;
+    document.getElementById('counterLabel').textContent = currentNumber;
+    document.getElementById('multiplier').value = multiplier;
+    document.getElementById('multiplicand').value = currentNumber;
+    
+    const result = currentNumber * multiplier;
+    document.getElementById('result').textContent = formatNumber(result);
+    
+    updateActiveButton();
+    animateCounterBox();
+}
+
+// Initialize with example from image
+document.addEventListener('DOMContentLoaded', function() {
+    calculate();
+    updateActiveButton();
+    
+    // Add event listener for multiplier input changes
+    document.getElementById('multiplier').addEventListener('input', calculate);
+});
+
+function updateActiveButton() {
+    const buttons = document.querySelectorAll('.number-grid .number-btn');
+    buttons.forEach((btn, idx) => {
+        if (idx + 1 === currentNumber) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+function showCounterTick() {
+    const tick = document.getElementById('counterTick');
+    if (!tick) return;
+    
+    tick.classList.add('tick-animation');
+    setTimeout(() => {
+        tick.classList.remove('tick-animation');
+    }, 600);
+}
+
+function animateCounterBox() {
+    const counterBox = document.getElementById('counterBox');
+    counterBox.classList.add('counter-update');
+    setTimeout(() => {
+        counterBox.classList.remove('counter-update');
+    }, 300);
+}
+
+function startCounterEdit() {
+    const displaySpan = document.getElementById('counterValue');
+    const input = document.getElementById('counterEditInput');
+    if (!displaySpan || !input) return;
+
+    input.value = currentNumber;
+    displaySpan.style.visibility = 'hidden';
+    input.style.display = 'block';
+    input.focus();
+    input.select();
+
+    const finish = () => finishCounterEdit();
+    input.onblur = finish;
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') finish();
+        if (e.key === 'Escape') {
+            input.value = currentNumber;
+            finish();
+        }
+    };
+}
+
+function finishCounterEdit() {
+    const displaySpan = document.getElementById('counterValue');
+    const input = document.getElementById('counterEditInput');
+    if (!displaySpan || !input) return;
+
+    const value = parseInt(input.value, 10);
+    if (!isNaN(value) && value >= 1) {
+        currentNumber = value;
+        updateDisplay();
+    }
+
+    input.style.display = 'none';
+    displaySpan.style.visibility = 'visible';
+}
+</script>
+
+</body>
+</html>
