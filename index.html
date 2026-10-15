@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>உழவர் நிலம் ஹெக்டர் - ஏர் மாற்றி கணக்கீடகம்</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #059669;
+            --success-hover: #047857;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --danger-active: #b91c1c;
+            --danger-bg: #fee2e2;
+            --bg-page: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Mukta Malar', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .page-content {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .page-title {
+            color: var(--text-main);
+            font-size: 1.35rem;
+            font-family: 'Mukta Malar', 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            line-height: 1.35;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .calc-wrapper {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 20px 25px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .card-header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            padding: 18px 22px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .title-group {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-header .title-group h1 {
+            display: none;
+        }
+
+        .card-header .title-group p {
+            font-size: 0.9rem;
+            color: #93c5fd;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* Solid Red Clear Button */
+        .btn-clear-header {
+            background-color: var(--danger);
+            border: 1px solid #f87171;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-clear-header:hover {
+            background-color: var(--danger-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-clear-header:active {
+            background-color: var(--danger-active);
+            transform: translateY(0);
+        }
+
+        /* Card Body */
+        .card-body {
+            padding: 24px 20px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        #inputsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .calc-row {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1.5px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 12px;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .calc-row:hover, .calc-row:focus-within {
+            border-color: #93c5fd;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+            background: #ffffff;
+        }
+
+        .factor-tag {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            background: #e2e8f0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .operator {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .calc-input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            background: transparent;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a !important;
+            outline: none;
+            text-align: center;
+            padding: 6px 0;
+        }
+
+        .calc-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .btn-remove {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+
+        .btn-remove:hover, .btn-remove:active {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* Action Buttons */
+        .action-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-add-main {
+            background: #eff6ff;
+            color: var(--primary);
+            border: 1.5px dashed #93c5fd;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            min-height: 44px;
+        }
+
+        .btn-add-main:hover {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: var(--primary-hover);
+        }
+
+        .btn-submit {
+            background-color: var(--success);
+            color: #ffffff;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+            transition: 0.2s ease;
+            min-height: 46px;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-submit:active, .btn-add-main:active {
+            transform: scale(0.98);
+        }
+
+        /* Result Box */
+        .result-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .result-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        /* Footer Credit */
+        .card-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 12px 16px;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        .creator-tag {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+
+        .creator-name {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 10px;
+            }
+            .card-header {
+                padding: 16px 14px;
+            }
+            .card-body {
+                padding: 18px 14px;
+            }
+            .factor-tag {
+                font-size: 0.85rem;
+                padding: 5px 8px;
+            }
+            .calc-input {
+                font-size: 1.05rem;
+            }
+            .result-value {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="page-content">
+    <h1 class="page-title">உழவர் நிலம் ஹெக்டர் - ஏர் மாற்றி கணக்கீடகம்</h1>
+    <br>
+    <br>
+    <div class="calc-wrapper">
+    <!-- Header -->
+    <div class="card-header">
+        <div class="title-group">
+            <p>ஹெக்டர் - ஏர் மாற்றி</p>
+        </div>
+        <div class="header-actions">
+            <span class="badge">Acre / Cent</span>
+            <button type="button" id="btnClear" class="btn-clear-header" title="Clear all fields">
+                &#x21bb; Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+        <span class="section-label">Values list</span>
+
+        <!-- Dynamic Inputs Container -->
+        <div id="inputsContainer">
+            <!-- Row will be loaded dynamically by script to guarantee 8.09 appears -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-grid">
+            <button type="button" id="btnAddRow" class="btn-add-main">+ Add Row</button>
+            <button type="button" id="btnCalculate" class="btn-submit">Calculate Result</button>
+        </div>
+
+        <!-- Result Box -->
+        <div class="result-box">
+            <span class="result-title">Answer =</span>
+            <div id="answerDisplay" class="result-value">19.9823</div>
+        </div>
+    </div>
+
+    <!-- Footer Credit -->
+    <div class="card-footer">
+        <span class="creator-tag">Created by - <span class="creator-name">MUKESH.M</span></span>
+    </div>
+</div>
+</main>
+
+<script>
+    // Explicit initialization ensures the value 8.09 is always visible
+    function resetToDefault() {
+        const container = document.getElementById("inputsContainer");
+        const displayElem = document.getElementById("answerDisplay");
+
+        container.innerHTML = `
+            <div class="calc-row">
+                <span class="factor-tag">2.47</span>
+                <span class="operator">&times;</span>
+                <input type="number" step="any" class="calc-input" id="initialInput" placeholder="0.00">
+                <button type="button" class="btn-remove" title="Remove">&times;</button>
+            </div>
+        `;
+
+        // Direct property assignment forces the browser to display it
+        const firstInput = document.getElementById("initialInput");
+        firstInput.value = "8.09";
+        firstInput.setAttribute("value", "8.09");
+
+        displayElem.textContent = "19.9823";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const container = document.getElementById("inputsContainer");
+        const btnAddRow = document.getElementById("btnAddRow");
+        const btnCalculate = document.getElementById("btnCalculate");
+        const btnClear = document.getElementById("btnClear");
+        const displayElem = document.getElementById("answerDisplay");
+
+        // Load 8.09 immediately
+        resetToDefault();
+
+        // 1. ADD ROW
+        function addNewRow() {
+            const row = document.createElement("div");
+            row.className = "calc-row";
+
+            row.innerHTML = `
+                <span class="factor-tag">2.47</span>
+                <span class="operator">&times;</span>
+                <input type="number" step="any" class="calc-input" placeholder="0.00">
+                <button type="button" class="btn-remove" title="Remove">&times;</button>
+            `;
+
+            container.appendChild(row);
+
+            const newInput = row.querySelector(".calc-input");
+            if (newInput) {
+                newInput.focus();
+            }
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        btnAddRow.addEventListener("click", addNewRow);
+
+        // 2. DELETE ROW (Event Delegation)
+        container.addEventListener("click", function (e) {
+            if (e.target && e.target.classList.contains("btn-remove")) {
+                const rows = container.querySelectorAll(".calc-row");
+                if (rows.length > 1) {
+                    e.target.closest(".calc-row").remove();
+                } else {
+                    const singleInput = rows[0].querySelector(".calc-input");
+                    if (singleInput) singleInput.value = "";
+                }
+            }
+        });
+
+        // 3. CALCULATE FUNCTION
+        function calculateTotal() {
+            const inputs = container.querySelectorAll(".calc-input");
+            let total = 0;
+            let hasValidInput = false;
+
+            inputs.forEach(function (input) {
+                const val = parseFloat(input.value);
+                if (!isNaN(val)) {
+                    total += (2.47 * val);
+                    hasValidInput = true;
+                }
+            });
+
+            if (!hasValidInput) {
+                displayElem.textContent = "0.00";
+                return;
+            }
+
+            // Up to 4 decimals
+            displayElem.textContent = parseFloat(total.toFixed(4));
+        }
+
+        btnCalculate.addEventListener("click", calculateTotal);
+
+        // 4. CLEAR ALL (resets to 8.09)
+        btnClear.addEventListener("click", resetToDefault);
+
+        // Enter key shortcut
+        container.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                calculateTotal();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
